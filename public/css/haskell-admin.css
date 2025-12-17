@@ -1,0 +1,245 @@
+/* Cores da Identidade Visual Haskell */
+:root {
+    --haskell-teal: #0d8784;
+    --haskell-teal-dark: #0a6663;
+    --haskell-teal-light: #10a19d;
+    --haskell-pink: #e91e8c;
+    --haskell-lime: #c3d933;
+    --haskell-lime-dark: #a8bd2c;
+}
+
+/* Navbar/Topbar */
+.main-header.navbar {
+    background-color: var(--haskell-teal) !important;
+    border-bottom: 3px solid var(--haskell-pink);
+}
+
+.main-header.navbar .nav-link {
+    color: #ffffff !important;
+}
+
+.main-header.navbar .nav-link:hover {
+    color: var(--haskell-lime) !important;
+}
+
+/* Brand/Logo */
+.brand-link {
+    background-color: var(--haskell-teal-dark) !important;
+    border-bottom: 1px solid var(--haskell-pink);
+}
+
+.brand-link .brand-text {
+    color: #ffffff !important;
+}
+
+/* Sidebar */
+.main-sidebar {
+    background-color: var(--haskell-teal-dark) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+    background-color: var(--haskell-pink) !important;
+    color: #ffffff !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-dark-primary .nav-header {
+    color: var(--haskell-lime);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Botões Primários */
+.btn-primary {
+    background-color: var(--haskell-teal) !important;
+    border-color: var(--haskell-teal) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--haskell-teal-dark) !important;
+    border-color: var(--haskell-teal-dark) !important;
+}
+
+/* Botões de Sucesso */
+.btn-success {
+    background-color: var(--haskell-lime) !important;
+    border-color: var(--haskell-lime) !important;
+    color: #000 !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background-color: var(--haskell-lime-dark) !important;
+    border-color: var(--haskell-lime-dark) !important;
+    color: #000 !important;
+}
+
+/* Links */
+a {
+    color: var(--haskell-teal);
+}
+
+a:hover {
+    color: var(--haskell-pink);
+}
+
+/* Cards com tema primary */
+.card-primary:not(.card-outline) > .card-header {
+    background-color: var(--haskell-teal);
+    border-color: var(--haskell-teal);
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid var(--haskell-teal);
+}
+
+/* Cards com tema success */
+.card-success:not(.card-outline) > .card-header {
+    background-color: var(--haskell-lime);
+    color: #000;
+}
+
+.card-success.card-outline {
+    border-top: 3px solid var(--haskell-lime);
+}
+
+/* Cards com tema info */
+.card-info:not(.card-outline) > .card-header {
+    background-color: var(--haskell-teal-light);
+}
+
+.card-info.card-outline {
+    border-top: 3px solid var(--haskell-teal-light);
+}
+
+/* Cards com tema warning */
+.card-warning:not(.card-outline) > .card-header {
+    background-color: var(--haskell-pink);
+}
+
+.card-warning.card-outline {
+    border-top: 3px solid var(--haskell-pink);
+}
+
+/* Badges */
+.badge-success {
+    background-color: var(--haskell-lime) !important;
+    color: #000 !important;
+}
+
+.badge-primary {
+    background-color: var(--haskell-teal) !important;
+}
+
+/* Small Box (Dashboard Widgets) */
+.small-box.bg-info {
+    background-color: var(--haskell-teal) !important;
+}
+
+.small-box.bg-success {
+    background-color: var(--haskell-lime) !important;
+    color: #000 !important;
+}
+
+.small-box.bg-success h3,
+.small-box.bg-success p {
+    color: #000 !important;
+}
+
+.small-box.bg-warning {
+    background-color: var(--haskell-pink) !important;
+}
+
+/* Paginação */
+.page-item.active .page-link {
+    background-color: var(--haskell-teal) !important;
+    border-color: var(--haskell-teal) !important;
+}
+
+.page-link {
+    color: var(--haskell-teal);
+}
+
+.page-link:hover {
+    color: var(--haskell-pink);
+}
+
+/* Forms - Inputs com foco */
+.form-control:focus {
+    border-color: var(--haskell-teal);
+    box-shadow: 0 0 0 0.2rem rgba(13, 135, 132, 0.25);
+}
+
+/* Select2 - Customização */
+.select2-container--bootstrap4 .select2-results__option--highlighted,
+.select2-container--bootstrap4 .select2-results__option--highlighted.select2-results__option[aria-selected=true] {
+    background-color: var(--haskell-teal);
+}
+
+.select2-container--bootstrap4.select2-container--focus .select2-selection {
+    border-color: var(--haskell-teal);
+    box-shadow: 0 0 0 0.2rem rgba(13, 135, 132, 0.25);
+}
+
+/* Tabs */
+.nav-tabs .nav-link.active {
+    border-bottom-color: var(--haskell-pink);
+    color: var(--haskell-teal);
+}
+
+/* Progress bars */
+.progress-bar {
+    background-color: var(--haskell-teal);
+}
+
+/* Login page */
+.login-logo,
+.register-logo {
+    color: var(--haskell-teal);
+}
+
+.login-box-msg,
+.register-box-msg {
+    color: var(--haskell-teal-dark);
+}
+
+/* Checkbox e Radio customizados */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--haskell-teal);
+    border-color: var(--haskell-teal);
+}
+
+/* User Panel no Sidebar */
+.user-panel {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-panel .info a {
+    color: #fff;
+}
+
+/* Scrollbar customizado para sidebar */
+.sidebar-dark-primary::-webkit-scrollbar-thumb {
+    background-color: var(--haskell-teal);
+}
+
+/* DataTables */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: var(--haskell-teal) !important;
+    border-color: var(--haskell-teal) !important;
+}
+
+/* SweetAlert2 - Botões de confirmação */
+.swal2-confirm {
+    background-color: var(--haskell-teal) !important;
+}
+
+.swal2-confirm:hover {
+    background-color: var(--haskell-teal-dark) !important;
+}

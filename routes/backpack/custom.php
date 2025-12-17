@@ -16,6 +16,18 @@ Route::group([
     ),
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    // Dashboard
+    Route::get('dashboard', 'DashboardController@index')->name('admin.dashboard');
+
+    // Distribuidores
+    Route::crud('distributor', 'DistributorCrudController');
+    Route::post('distributor/{id}/approve', 'DistributorCrudController@approve')->name('distributor.approve');
+    Route::get('distributor/{id}/reject', 'DistributorCrudController@reject')->name('distributor.reject');
+    Route::post('distributor/{id}/process-rejection', 'DistributorCrudController@processRejection')->name('distributor.process-rejection');
+
+    // Outros CRUDs
+    Route::crud('seller', 'SellerCrudController');
+    Route::crud('contact-message', 'ContactMessageCrudController');
 }); // this should be the absolute last line of this file
 
 /**
