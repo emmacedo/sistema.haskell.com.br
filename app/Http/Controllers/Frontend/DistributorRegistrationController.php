@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
 use App\Models\Distributor;
 use App\Models\Seller;
 use App\Services\EmailService;
@@ -49,9 +48,6 @@ class DistributorRegistrationController extends Controller
             'bairro' => 'required|string|max:100',
             'cidade' => 'required|string|max:100',
             'estado' => 'required|string|size:2',
-            'cities' => 'required|array|min:1',
-            'cities.*' => 'exists:cities,id',
-
             // Pelo menos 1 vendedor é obrigatório
             'sellers' => 'required|array|min:1',
             'sellers.*.name' => 'required|string|max:255',
@@ -74,8 +70,6 @@ class DistributorRegistrationController extends Controller
             'cidade.required' => 'A cidade é obrigatória',
             'estado.required' => 'O estado (UF) é obrigatório',
             'estado.size' => 'O estado deve ter 2 caracteres (UF)',
-            'cities.required' => 'Selecione pelo menos uma cidade',
-            'cities.min' => 'Selecione pelo menos uma cidade',
             'sellers.required' => 'Cadastre pelo menos um vendedor',
             'sellers.min' => 'Cadastre pelo menos um vendedor',
             'sellers.*.name.required' => 'O nome do vendedor é obrigatório',
@@ -114,9 +108,6 @@ class DistributorRegistrationController extends Controller
                 'verification_code_expires_at' => $expiresAt,
                 'email_verified_at' => null,
             ]);
-
-            // Associar cidades
-            $distributor->cities()->attach($validated['cities']);
 
             // Criar vendedores
             foreach ($validated['sellers'] as $sellerData) {
@@ -292,29 +283,4 @@ class DistributorRegistrationController extends Controller
         return back()->with('success', 'Código de verificação reenviado com sucesso!');
     }
 
-    /**
-     * Autocomplete para cidades (usado no formulário)
-     */
-    public function citiesAutocomplete(Request $request)
-    {
-        $term = $request->input('term', '');
-
-        if (strlen($term) < 2) {
-            return response()->json([]);
-        }
-
-        $cities = City::where('name', 'LIKE', "%{$term}%")
-            ->with('state')
-            ->limit(20)
-            ->get()
-            ->map(function ($city) {
-                return [
-                    'id' => $city->id,
-                    'value' => $city->name,
-                    'label' => "{$city->name} - {$city->state->uf}",
-                ];
-            });
-
-        return response()->json($cities);
-    }
 }

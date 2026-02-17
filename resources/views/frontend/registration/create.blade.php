@@ -253,43 +253,6 @@
                             </div>
                         </div>
 
-                        <!-- Cidades Atendidas -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Cidades Atendidas</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="city_search" class="form-label">Buscar Cidade *</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           id="city_search"
-                                           placeholder="Digite o nome da cidade...">
-                                    <small class="text-muted">Digite pelo menos 2 caracteres para buscar</small>
-                                </div>
-
-                                <div id="selected_cities" class="mb-3">
-                                    <label class="form-label">Cidades Selecionadas:</label>
-                                    <div id="cities_list" class="border rounded p-3 min-height-100">
-                                        @if(old('cities'))
-                                            @foreach(old('cities') as $cityId)
-                                                <span class="badge bg-primary me-2 mb-2 city-badge" data-city-id="{{ $cityId }}">
-                                                    Cidade {{ $cityId }}
-                                                    <i class="bi bi-x-circle remove-city" style="cursor: pointer;"></i>
-                                                    <input type="hidden" name="cities[]" value="{{ $cityId }}">
-                                                </span>
-                                            @endforeach
-                                        @else
-                                            <span class="text-muted" id="no_cities_text">Nenhuma cidade selecionada</span>
-                                        @endif
-                                    </div>
-                                    @error('cities')
-                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Vendedores -->
                         <div class="card mb-4">
                             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -464,48 +427,6 @@ $(document).ready(function() {
         });
     });
 
-    // Autocomplete de cidades
-    $('#city_search').autocomplete({
-        source: "{{ route('registration.cities.autocomplete') }}",
-        minLength: 2,
-        select: function(event, ui) {
-            event.preventDefault();
-            // ui.item.id contém o ID da cidade, ui.item.label contém "Nome - UF"
-            addCity(ui.item.id, ui.item.label);
-            $(this).val('');
-            return false;
-        }
-    });
-
-    // Adicionar cidade
-    function addCity(id, label) {
-        // Verificar se a cidade já foi adicionada
-        if ($(`#cities_list .city-badge[data-city-id="${id}"]`).length > 0) {
-            return;
-        }
-
-        $('#no_cities_text').remove();
-
-        const badge = `
-            <span class="badge bg-primary me-2 mb-2 city-badge" data-city-id="${id}">
-                ${label}
-                <i class="bi bi-x-circle remove-city" style="cursor: pointer;"></i>
-                <input type="hidden" name="cities[]" value="${id}">
-            </span>
-        `;
-
-        $('#cities_list').append(badge);
-    }
-
-    // Remover cidade
-    $(document).on('click', '.remove-city', function() {
-        $(this).closest('.city-badge').remove();
-
-        if ($('#cities_list .city-badge').length === 0) {
-            $('#cities_list').html('<span class="text-muted" id="no_cities_text">Nenhuma cidade selecionada</span>');
-        }
-    });
-
     // Adicionar vendedor
     $('#add_seller').click(function() {
         const sellerHtml = `
@@ -553,9 +474,4 @@ $(document).ready(function() {
 });
 </script>
 
-<style>
-.min-height-100 {
-    min-height: 100px;
-}
-</style>
 @endsection

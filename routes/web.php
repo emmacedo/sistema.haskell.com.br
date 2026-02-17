@@ -66,8 +66,6 @@ Route::get('/cadastro/verificado', [App\Http\Controllers\Frontend\DistributorReg
 Route::post('/cadastro/reenviar', [App\Http\Controllers\Frontend\DistributorRegistrationController::class, 'resendCode'])
     ->middleware('throttle:2,10')
     ->name('registration.resend');
-Route::get('/cadastro/cidades/autocomplete', [App\Http\Controllers\Frontend\DistributorRegistrationController::class, 'citiesAutocomplete'])
-    ->name('registration.cities.autocomplete');
 
 // =============================================================================
 // 2. ÁREA DO DISTRIBUIDOR - Login passwordless por código de e-mail
