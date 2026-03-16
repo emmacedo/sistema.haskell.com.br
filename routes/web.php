@@ -103,11 +103,9 @@ Route::prefix('painel')->middleware(['distributor.auth'])->group(function () {
     Route::put('/empresa', [App\Http\Controllers\Distributor\PanelController::class, 'updateProfile'])
         ->name('distributor.profile.update');
 
-    // Cidades atendidas
+    // Cidades atendidas (somente visualização — edição exclusiva do administrador)
     Route::get('/cidades', [App\Http\Controllers\Distributor\PanelController::class, 'cities'])
         ->name('distributor.cities');
-    Route::put('/cidades', [App\Http\Controllers\Distributor\PanelController::class, 'updateCities'])
-        ->name('distributor.cities.update');
 
     // Mensagens de contato
     Route::get('/mensagens', [App\Http\Controllers\Distributor\PanelController::class, 'messages'])
@@ -129,11 +127,6 @@ Route::prefix('painel')->middleware(['distributor.auth'])->group(function () {
     Route::delete('/vendedores/{id}', [App\Http\Controllers\Distributor\PanelController::class, 'destroySeller'])
         ->name('distributor.sellers.destroy');
 
-    // API endpoints para seleção de cidades
-    Route::get('/api/states', [App\Http\Controllers\Distributor\PanelController::class, 'getStates'])
-        ->name('distributor.api.states');
-    Route::get('/api/cities/{stateId}', [App\Http\Controllers\Distributor\PanelController::class, 'getCitiesByState'])
-        ->name('distributor.api.cities');
 });
 
 // =============================================================================

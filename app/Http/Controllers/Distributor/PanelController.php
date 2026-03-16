@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Distributor;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
 use App\Models\ContactMessage;
 use App\Models\Distributor;
 use App\Models\Seller;
-use App\Models\State;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Controller principal do painel do distribuidor
@@ -107,7 +104,8 @@ class PanelController extends Controller
     }
 
     /**
-     * Exibe página de gerenciamento de cidades
+     * Exibe página de cidades atendidas (somente leitura)
+     * Apenas o administrador pode alterar as cidades pelo painel admin
      */
     public function cities()
     {
@@ -119,32 +117,16 @@ class PanelController extends Controller
 
         $distributor->load('cities.state');
 
-        return view('distributor.cities.index', compact('distributor'));
-    }
+        // Agrupar cidades por estado (UF) para exibição organizada
+        $cities = $distributor->cities;
+        $citiesByState = $cities->groupBy(fn ($city) => $city->state->uf)
+            ->sortKeys()
+            ->map(fn ($group) => [
+                'state_name' => $group->first()->state->name,
+                'cities' => $group->sortBy('name'),
+            ]);
 
-    /**
-     * Atualiza as cidades atendidas
-     */
-    public function updateCities(Request $request)
-    {
-        $distributor = $this->getDistributor();
-
-        if (!$distributor) {
-            return redirect()->route('distributor.login');
-        }
-
-        $validated = $request->validate([
-            'cities' => 'required|array|min:1',
-            'cities.*' => 'exists:cities,id',
-        ], [
-            'cities.required' => 'Selecione pelo menos uma cidade.',
-            'cities.min' => 'Selecione pelo menos uma cidade.',
-        ]);
-
-        $distributor->cities()->sync($validated['cities']);
-
-        return redirect()->route('distributor.cities')
-            ->with('success', 'Cidades atualizadas com sucesso!');
+        return view('distributor.cities.index', compact('distributor', 'cities', 'citiesByState'));
     }
 
     /**
@@ -321,23 +303,4 @@ class PanelController extends Controller
             ->with('success', 'Vendedor excluído com sucesso!');
     }
 
-    /**
-     * API: Retorna estados para o seletor de cidades
-     */
-    public function getStates()
-    {
-        $states = State::orderBy('name')->get(['id', 'name', 'uf']);
-        return response()->json($states);
-    }
-
-    /**
-     * API: Retorna cidades de um estado
-     */
-    public function getCitiesByState($stateId)
-    {
-        $cities = City::where('state_id', $stateId)
-            ->orderBy('name')
-            ->get(['id', 'name']);
-        return response()->json($cities);
-    }
 }
