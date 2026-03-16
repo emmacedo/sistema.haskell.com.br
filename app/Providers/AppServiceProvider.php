@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Date;
 
@@ -23,5 +24,8 @@ class AppServiceProvider extends ServiceProvider
         // Configurar Carbon para PT-BR
         Date::setLocale('pt_BR');
         setlocale(LC_TIME, 'pt_BR.utf8', 'pt_BR', 'Portuguese_Brazil');
+
+        // Usar paginação Bootstrap 5 como padrão (compatível com layout do distribuidor e admin)
+        Paginator::useBootstrapFive();
     }
 }
