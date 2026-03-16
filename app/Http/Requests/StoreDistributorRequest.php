@@ -38,7 +38,8 @@ class StoreDistributorRequest extends FormRequest
             'cidade' => ['nullable', 'string', 'max:100'],
             'estado' => ['nullable', 'string', 'max:2'],
             'status' => ['required', 'in:pending,approved,rejected'],
-            'cities' => ['required', 'array', 'min:1'],
+            // Cidades são opcionais na criação — admin pode vincular depois pela tela de edição
+            'cities' => ['nullable', 'array'],
             'cities.*' => ['exists:cities,id'],
         ];
     }

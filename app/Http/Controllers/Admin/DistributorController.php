@@ -67,8 +67,10 @@ class DistributorController extends Controller
 
             $distributor = Distributor::create($request->except('cities'));
 
-            // Sincronizar cidades
-            $distributor->cities()->sync($request->cities);
+            // Sincronizar cidades (se informadas; admin pode vincular depois pela edição)
+            if ($request->has('cities')) {
+                $distributor->cities()->sync($request->cities);
+            }
 
             DB::commit();
 

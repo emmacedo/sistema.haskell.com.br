@@ -8,6 +8,26 @@
 
 @section('content')
     <x-adminlte-card>
+        {{-- Exibição de erros de validação para o administrador saber o que corrigir --}}
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h5><i class="fas fa-exclamation-triangle"></i> Corrija os erros abaixo:</h5>
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+            </div>
+        @endif
+
         <form action="{{ route('distributors.store') }}" method="POST">
             @csrf
 
