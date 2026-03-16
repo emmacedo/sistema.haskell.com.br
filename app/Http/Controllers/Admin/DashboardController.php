@@ -34,16 +34,21 @@ class DashboardController extends Controller
         ->get();
 
         // Top 10 cidades mais buscadas
+        // Filtra registros com city_id nulo ou cidade inexistente para evitar erro de "property on null"
         $topSearchedCities = SearchStatistic::select('city_id', DB::raw('COUNT(*) as search_count'))
-            ->with('city')
+            ->whereNotNull('city_id')
+            ->whereHas('city')
+            ->with('city.state')
             ->groupBy('city_id')
             ->orderByDesc('search_count')
             ->limit(10)
             ->get();
 
         // Top 10 cidades sem cobertura (mais buscadas sem distribuidor)
+        // whereNotNull e whereHas garantem que só retorna registros com cidade válida
         $citiesWithoutCoverage = SearchStatistic::select('city_id', DB::raw('COUNT(*) as search_count'))
-            ->with('city')
+            ->whereNotNull('city_id')
+            ->with('city.state')
             ->whereHas('city', function($query) {
                 $query->doesntHave('distributors');
             })

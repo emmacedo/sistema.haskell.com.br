@@ -96,8 +96,8 @@
                         @forelse($topSearchedCities as $index => $stat)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $stat->city->name }}</td>
-                                <td>{{ $stat->city->state->uf }}</td>
+                                <td>{{ $stat->city?->name ?? 'N/A' }}</td>
+                                <td>{{ $stat->city?->state?->uf ?? '-' }}</td>
                                 <td><span class="badge badge-primary">{{ $stat->search_count }}</span></td>
                             </tr>
                         @empty
@@ -125,8 +125,8 @@
                         @forelse($citiesWithoutCoverage as $index => $stat)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $stat->city->name }}</td>
-                                <td>{{ $stat->city->state->uf }}</td>
+                                <td>{{ $stat->city?->name ?? 'N/A' }}</td>
+                                <td>{{ $stat->city?->state?->uf ?? '-' }}</td>
                                 <td><span class="badge badge-warning">{{ $stat->search_count }}</span></td>
                             </tr>
                         @empty
