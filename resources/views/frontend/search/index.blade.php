@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- Formulário de busca unificado -->
-            <div class="mt-5 pt-5">
+            <div class="mt-3">
                 <form action="{{ route('search.search') }}" method="POST" id="searchForm">
                     @csrf
                     <input type="hidden" name="search_type" id="search_type" value="auto">

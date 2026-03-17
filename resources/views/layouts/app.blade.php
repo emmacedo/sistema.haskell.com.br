@@ -19,10 +19,10 @@
     <style>
         :root {
             /* Cores do layout de busca */
-            --cor-fundo: #7a9a5c;
+            --cor-fundo: #7b9c49;
             --cor-header-card: #3d5a47;
             --cor-body-card: #f5e6d3;
-            --cor-botao: #3d5a47;
+            --cor-botao: #7b9b46;
             --cor-input-bg: #f8f9fa;
 
             /* Cores da identidade visual Haskell */
@@ -139,8 +139,15 @@
             display: flex;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
+        }
+
+        /* Em telas menores (iframe mobile), search-box ocupa toda a largura */
+        @media (max-width: 768px) {
+            .search-box {
+                max-width: 100%;
+            }
         }
 
         .search-box input {
@@ -157,8 +164,8 @@
         }
 
         .search-box button {
-            background: var(--cor-input-bg);
-            border: 1px solid #ddd;
+            background: var(--cor-botao);
+            border: 1px solid var(--cor-botao);
             border-radius: 10px;
             width: 50px;
             height: 50px;
@@ -167,6 +174,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
+            flex-shrink: 0; /* Impede que o botão encolha no mobile */
         }
 
         .search-box button:hover {
@@ -174,14 +182,10 @@
             border-color: var(--cor-header-card);
         }
 
-        .search-box button:hover .search-icon {
-            stroke: #fff;
-        }
-
         .search-icon {
             width: 24px;
             height: 24px;
-            stroke: var(--cor-header-card);
+            stroke: #fff;
             stroke-width: 2.5;
             fill: none;
         }
@@ -211,6 +215,14 @@
 
         .distributor-card-body {
             padding: 25px;
+            overflow: hidden; /* Impede que conteúdo vaze para fora do card */
+        }
+
+        /* Reduz padding no mobile para aproveitar melhor o espaço */
+        @media (max-width: 768px) {
+            .distributor-card-body {
+                padding: 15px;
+            }
         }
 
         /* Vendedor */
@@ -239,18 +251,23 @@
 
         .contact-field {
             flex: 1;
+            min-width: 0; /* Permite que o flex item encolha abaixo do tamanho do conteúdo */
             background: #fff;
             border-radius: 8px;
             padding: 12px 15px;
             font-size: 14px;
             color: #555;
             border-left: 4px solid var(--cor-header-card);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .contact-btn {
             width: 45px;
+            min-width: 45px; /* Impede que o botão encolha no mobile */
             height: 45px;
-            background: var(--cor-header-card);
+            background: var(--cor-botao);
             border: none;
             border-radius: 8px;
             display: flex;
@@ -260,10 +277,11 @@
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
+            flex-shrink: 0; /* Garante que o botão não seja comprimido */
         }
 
         .contact-btn:hover {
-            background: #2d4435;
+            background: var(--cor-header-card);
             transform: scale(1.05);
         }
 
@@ -315,7 +333,7 @@
     @yield('styles')
 </head>
 <body>
-    <main class="py-4">
+    <main class="py-2">
         @yield('content')
     </main>
 
