@@ -129,6 +129,7 @@
         body {
             background-color: var(--cor-fundo);
             min-height: 100vh;
+            margin: 0; /* Remove margem padrão que causa linha branca no iframe */
         }
 
         /* Campo de busca principal */
@@ -354,13 +355,25 @@
         // Só executa se estiver dentro de um iframe
         if (window.parent === window) return;
 
+        var lastHeight = 0; // Armazena a última altura enviada para evitar envios repetidos
+        var debounceTimer = null; // Timer para debounce — evita loop de redimensionamento
+
         // Envia a altura real do conteúdo para a janela pai via postMessage
         function sendHeightToParent() {
-            var height = document.documentElement.scrollHeight;
-            window.parent.postMessage({
-                type: 'iframeResize',
-                height: height
-            }, '*');
+            // Debounce de 150ms: agrupa múltiplas mudanças rápidas em um único envio
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                var height = document.documentElement.scrollHeight;
+
+                // Só envia se a altura mudou (evita loop infinito com o pai)
+                if (height !== lastHeight) {
+                    lastHeight = height;
+                    window.parent.postMessage({
+                        type: 'iframeResize',
+                        height: height
+                    }, '*');
+                }
+            }, 150);
         }
 
         // Envia ao carregar a página
