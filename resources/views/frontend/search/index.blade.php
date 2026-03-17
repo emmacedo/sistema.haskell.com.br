@@ -19,11 +19,12 @@
                                placeholder="busque por cep, cidade ou estado"
                                autocomplete="off"
                                required>
-                        <button type="submit">
+                        <button type="submit" id="searchBtn">
                             <svg class="search-icon" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="7"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
+                            <div class="search-spinner"></div>
                         </button>
                     </div>
                 </form>
@@ -58,6 +59,13 @@ $(document).ready(function() {
         } else {
             $('#search_type').val('city');
         }
+    });
+
+    // Ao submeter o formulário, troca a lupa pelo spinner de loading
+    $('#searchForm').on('submit', function() {
+        $('#searchBtn .search-icon').hide();
+        $('#searchBtn .search-spinner').show();
+        $('#searchBtn').prop('disabled', true);
     });
 
     // Autocomplete para cidades

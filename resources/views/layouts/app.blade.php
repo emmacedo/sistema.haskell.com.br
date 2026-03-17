@@ -191,6 +191,21 @@
             fill: none;
         }
 
+        /* Spinner de loading no botão de busca */
+        .search-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none; /* Oculto por padrão, exibido via JS no submit */
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Card do distribuidor */
         .distributor-card {
             background: var(--cor-body-card);
