@@ -347,5 +347,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     @yield('scripts')
+
+    <!-- Comunica altura do conteúdo para o iframe pai (redimensionamento automático) -->
+    <script>
+    (function() {
+        // Só executa se estiver dentro de um iframe
+        if (window.parent === window) return;
+
+        // Envia a altura real do conteúdo para a janela pai via postMessage
+        function sendHeightToParent() {
+            var height = document.documentElement.scrollHeight;
+            window.parent.postMessage({
+                type: 'iframeResize',
+                height: height
+            }, '*');
+        }
+
+        // Envia ao carregar a página
+        window.addEventListener('load', sendHeightToParent);
+
+        // Envia quando o DOM muda (resultados de busca, formulário abre/fecha, etc.)
+        var observer = new MutationObserver(sendHeightToParent);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+
+        // Envia quando a janela é redimensionada (ex: rotação de tela)
+        window.addEventListener('resize', sendHeightToParent);
+    })();
+    </script>
 </body>
 </html>
