@@ -7,6 +7,14 @@
 @stop
 
 @section('content')
+    {{-- Overlay de loading para feedback visual durante consultas lentas --}}
+    <div id="loading-overlay">
+        <div class="loading-box">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3 mb-0 font-weight-bold">Carregando dados...</p>
+        </div>
+    </div>
+
     {{-- Filtro de Período --}}
     <div class="card card-outline card-primary mb-3">
         <div class="card-body py-2">
@@ -243,6 +251,33 @@
 @stop
 
 @section('css')
+    <style>
+        /* Overlay de loading exibido durante navegação dos filtros */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        #loading-overlay.active {
+            display: flex;
+        }
+        #loading-overlay .loading-box {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        #loading-overlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
 @stop
 
 @section('js')
@@ -252,6 +287,21 @@
         document.getElementById('btn-custom-period').addEventListener('click', function() {
             const form = document.getElementById('custom-period-form');
             form.classList.toggle('d-none');
+        });
+
+        // Exibe overlay de loading ao clicar nos botões de período ou submeter o form
+        const overlay = document.getElementById('loading-overlay');
+
+        // Links de período pré-definido (5, 15, 30 dias)
+        document.querySelectorAll('.card-primary a[href*="period="]').forEach(function(link) {
+            link.addEventListener('click', function() {
+                overlay.classList.add('active');
+            });
+        });
+
+        // Submit do formulário de período personalizado
+        document.getElementById('custom-period-form').addEventListener('submit', function() {
+            overlay.classList.add('active');
         });
     </script>
     <script>
