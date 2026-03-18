@@ -67,16 +67,23 @@ class DistributorController extends Controller
 
             $distributor = Distributor::create($request->except('cities'));
 
-            // Sincronizar cidades (se informadas; admin pode vincular depois pela edição)
+            // Sincronizar cidades com apropriação automática (se informadas)
+            $appropriatedMessage = null;
             if ($request->has('cities')) {
-                $distributor->cities()->sync($request->cities);
+                $appropriatedMessage = $this->syncCitiesWithAppropriation($distributor, $request->cities);
             }
 
             DB::commit();
 
+            // Montar mensagem de sucesso com aviso de apropriação, se houver
+            $successMessage = 'Distribuidor criado com sucesso!';
+            if ($appropriatedMessage) {
+                $successMessage .= ' ' . $appropriatedMessage;
+            }
+
             return redirect()
                 ->route('distributors.index')
-                ->with('success', 'Distribuidor criado com sucesso!');
+                ->with('success', $successMessage);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -117,14 +124,20 @@ class DistributorController extends Controller
 
             $distributor->update($request->except('cities'));
 
-            // Sincronizar cidades
-            $distributor->cities()->sync($request->cities);
+            // Sincronizar cidades com apropriação automática
+            $appropriatedMessage = $this->syncCitiesWithAppropriation($distributor, $request->cities ?? []);
 
             DB::commit();
 
+            // Montar mensagem de sucesso com aviso de apropriação, se houver
+            $successMessage = 'Distribuidor atualizado com sucesso!';
+            if ($appropriatedMessage) {
+                $successMessage .= ' ' . $appropriatedMessage;
+            }
+
             return redirect()
                 ->route('distributors.index')
-                ->with('success', 'Distribuidor atualizado com sucesso!');
+                ->with('success', $successMessage);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -197,5 +210,53 @@ class DistributorController extends Controller
                 ->back()
                 ->with('error', 'Erro ao rejeitar distribuidor: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Sincroniza cidades com apropriação automática.
+     *
+     * Uma cidade só pode pertencer a um distribuidor por vez. Se alguma cidade
+     * informada já estiver vinculada a outro distribuidor, ela é automaticamente
+     * removida do anterior e vinculada ao atual (última alteração tem prioridade).
+     *
+     * @param  Distributor  $distributor  O distribuidor que receberá as cidades
+     * @param  array        $cityIds      IDs das cidades a vincular
+     * @return string|null  Mensagem de aviso sobre cidades apropriadas, ou null
+     */
+    private function syncCitiesWithAppropriation(Distributor $distributor, array $cityIds): ?string
+    {
+        if (empty($cityIds)) {
+            // Remove todas as cidades do distribuidor se nenhuma foi informada
+            $distributor->cities()->sync([]);
+            return null;
+        }
+
+        // Buscar cidades que já estão vinculadas a OUTROS distribuidores
+        $appropriatedCities = DB::table('city_distributor')
+            ->join('cities', 'cities.id', '=', 'city_distributor.city_id')
+            ->whereIn('city_distributor.city_id', $cityIds)
+            ->where('city_distributor.distributor_id', '!=', $distributor->id)
+            ->pluck('cities.name');
+
+        // Remover essas cidades dos outros distribuidores antes de vincular
+        if ($appropriatedCities->isNotEmpty()) {
+            DB::table('city_distributor')
+                ->whereIn('city_id', $cityIds)
+                ->where('distributor_id', '!=', $distributor->id)
+                ->delete();
+        }
+
+        // Sincronizar as cidades no distribuidor atual
+        $distributor->cities()->sync($cityIds);
+
+        // Retornar mensagem de aviso se houve apropriação
+        if ($appropriatedCities->isNotEmpty()) {
+            $count = $appropriatedCities->count();
+            $cityNames = $appropriatedCities->implode(', ');
+
+            return "Atenção: {$count} cidade(s) foram transferidas de outros distribuidores: {$cityNames}.";
+        }
+
+        return null;
     }
 }
