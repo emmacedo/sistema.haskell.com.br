@@ -7,6 +7,55 @@
 @stop
 
 @section('content')
+    {{-- Filtro de Período --}}
+    <div class="card card-outline card-primary mb-3">
+        <div class="card-body py-2">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                {{-- Botões de período pré-definido --}}
+                <div class="d-flex align-items-center flex-wrap">
+                    <span class="mr-2 font-weight-bold">Período:</span>
+                    <a href="{{ route('admin.dashboard', ['period' => '5']) }}"
+                       class="btn btn-sm {{ $period === '5' ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
+                        5 dias
+                    </a>
+                    <a href="{{ route('admin.dashboard', ['period' => '15']) }}"
+                       class="btn btn-sm {{ $period === '15' ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
+                        15 dias
+                    </a>
+                    <a href="{{ route('admin.dashboard', ['period' => '30']) }}"
+                       class="btn btn-sm {{ $period === '30' ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
+                        30 dias
+                    </a>
+                    <button type="button" id="btn-custom-period"
+                            class="btn btn-sm {{ $period === 'custom' ? 'btn-primary' : 'btn-outline-primary' }} mr-3">
+                        Personalizado
+                    </button>
+
+                    {{-- Campos de data personalizada (ocultos por padrão, visíveis se period=custom) --}}
+                    <form id="custom-period-form" method="GET" action="{{ route('admin.dashboard') }}"
+                          class="d-inline-flex align-items-center {{ $period === 'custom' ? '' : 'd-none' }}">
+                        <input type="hidden" name="period" value="custom">
+                        <label class="mb-0 mr-1">De:</label>
+                        <input type="date" name="date_start" class="form-control form-control-sm mr-2"
+                               value="{{ $dateStart->format('Y-m-d') }}" style="width: 150px;">
+                        <label class="mb-0 mr-1">Até:</label>
+                        <input type="date" name="date_end" class="form-control form-control-sm mr-2"
+                               value="{{ $dateEnd->format('Y-m-d') }}" style="width: 150px;">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                    </form>
+                </div>
+
+                {{-- Indicador do período atual --}}
+                <div class="text-muted text-sm">
+                    <i class="fas fa-calendar-alt"></i>
+                    {{ $dateStart->format('d/m/Y') }} - {{ $dateEnd->format('d/m/Y') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Cards de Estatísticas --}}
     <div class="row">
         <div class="col-lg-3 col-6">
@@ -73,7 +122,7 @@
     {{-- Gráfico de Buscas --}}
     <div class="row">
         <div class="col-md-12">
-            <x-adminlte-card title="Buscas nos Últimos 30 Dias" theme="primary" icon="fas fa-chart-line">
+            <x-adminlte-card title="Buscas no Período" theme="primary" icon="fas fa-chart-line">
                 <canvas id="searchesChart" style="height: 300px;"></canvas>
             </x-adminlte-card>
         </div>
@@ -199,8 +248,15 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
+        // Toggle dos campos de data personalizada
+        document.getElementById('btn-custom-period').addEventListener('click', function() {
+            const form = document.getElementById('custom-period-form');
+            form.classList.toggle('d-none');
+        });
+    </script>
+    <script>
         // Gráfico de buscas
-        const searchesData = @json($searchesLast30Days);
+        const searchesData = @json($searchesInPeriod);
         const labels = searchesData.map(item => {
             const date = new Date(item.date);
             return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
