@@ -86,30 +86,76 @@ class DistributorRegistrationController extends Controller
             // Definir expiração do código para 24 horas
             $expiresAt = now()->addHours(24);
 
-            // Criar distribuidor
-            $distributor = Distributor::create([
-                'company_name' => $validated['company_name'],
-                'trade_name' => $validated['trade_name'],
-                'cnpj' => $validated['cnpj'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'phone2' => $validated['phone2'] ?? null,
-                'whatsapp' => $validated['whatsapp'] ?? null,
-                'website' => $validated['website'] ?? null,
-                'cep' => $validated['cep'],
-                'logradouro' => $validated['logradouro'],
-                'numero' => $validated['numero'],
-                'complemento' => $validated['complemento'] ?? null,
-                'bairro' => $validated['bairro'],
-                'cidade' => $validated['cidade'],
-                'estado' => $validated['estado'],
-                'status' => 'pending',
-                'verification_code' => $verificationCode,
-                'verification_code_expires_at' => $expiresAt,
-                'email_verified_at' => null,
-            ]);
+            // Verifica se existe um distribuidor soft-deleted com o mesmo CNPJ.
+            // Isso acontece quando o admin exclui o distribuidor e ele se recadastra.
+            // Nesse caso, restauramos o registro e atualizamos os dados obrigatórios,
+            // limpamos os dados não obrigatórios e mantemos os vendedores inativos (soft-deleted).
+            $existingDistributor = Distributor::onlyTrashed()
+                ->where('cnpj', $validated['cnpj'])
+                ->first();
 
-            // Criar vendedores
+            if ($existingDistributor) {
+                // Restaurar o distribuidor sem cascatear para os vendedores antigos,
+                // pois o distribuidor informará novos vendedores no formulário
+                $existingDistributor->restoreWithSellers = false;
+                $existingDistributor->restore();
+
+                // Atualizar dados obrigatórios (CNPJ não muda, já é o mesmo)
+                // e limpar dados não obrigatórios para que o distribuidor preencha novamente
+                $existingDistributor->update([
+                    // Dados obrigatórios - atualiza com os novos valores
+                    'company_name' => $validated['company_name'],
+                    'trade_name' => $validated['trade_name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
+                    'cep' => $validated['cep'],
+                    'logradouro' => $validated['logradouro'],
+                    'numero' => $validated['numero'],
+                    'bairro' => $validated['bairro'],
+                    'cidade' => $validated['cidade'],
+                    'estado' => $validated['estado'],
+                    // Dados não obrigatórios - limpa para preencher novamente
+                    'phone2' => $validated['phone2'] ?? null,
+                    'whatsapp' => $validated['whatsapp'] ?? null,
+                    'website' => $validated['website'] ?? null,
+                    'complemento' => $validated['complemento'] ?? null,
+                    // Reset do status e verificação para novo fluxo de aprovação
+                    'status' => 'pending',
+                    'verification_code' => $verificationCode,
+                    'verification_code_expires_at' => $expiresAt,
+                    'email_verified_at' => null,
+                ]);
+
+                $distributor = $existingDistributor;
+
+                // Vendedores antigos permanecem soft-deleted (inativos).
+                // Novos vendedores serão criados abaixo.
+            } else {
+                // Criar novo distribuidor normalmente (primeiro cadastro)
+                $distributor = Distributor::create([
+                    'company_name' => $validated['company_name'],
+                    'trade_name' => $validated['trade_name'],
+                    'cnpj' => $validated['cnpj'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
+                    'phone2' => $validated['phone2'] ?? null,
+                    'whatsapp' => $validated['whatsapp'] ?? null,
+                    'website' => $validated['website'] ?? null,
+                    'cep' => $validated['cep'],
+                    'logradouro' => $validated['logradouro'],
+                    'numero' => $validated['numero'],
+                    'complemento' => $validated['complemento'] ?? null,
+                    'bairro' => $validated['bairro'],
+                    'cidade' => $validated['cidade'],
+                    'estado' => $validated['estado'],
+                    'status' => 'pending',
+                    'verification_code' => $verificationCode,
+                    'verification_code_expires_at' => $expiresAt,
+                    'email_verified_at' => null,
+                ]);
+            }
+
+            // Criar novos vendedores informados no formulário
             foreach ($validated['sellers'] as $sellerData) {
                 Seller::create([
                     'distributor_id' => $distributor->id,

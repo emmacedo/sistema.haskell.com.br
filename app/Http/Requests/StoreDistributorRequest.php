@@ -24,8 +24,10 @@ class StoreDistributorRequest extends FormRequest
         return [
             'company_name' => ['required', 'string', 'max:255'],
             'trade_name' => ['required', 'string', 'max:255'],
-            'cnpj' => ['required', 'string', 'max:18', 'unique:distributors,cnpj'],
-            'email' => ['required', 'email', 'max:255', 'unique:distributors,email'],
+            // Ignora registros soft-deleted na validação de unicidade,
+            // pois distribuidores excluídos podem se recadastrar com o mesmo CNPJ/email
+            'cnpj' => ['required', 'string', 'max:18', 'unique:distributors,cnpj,NULL,id,deleted_at,NULL'],
+            'email' => ['required', 'email', 'max:255', 'unique:distributors,email,NULL,id,deleted_at,NULL'],
             'phone' => ['required', 'string', 'max:20'],
             'phone2' => ['nullable', 'string', 'max:20'],
             'whatsapp' => ['nullable', 'string', 'max:20'],

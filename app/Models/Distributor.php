@@ -13,6 +13,13 @@ class Distributor extends Model
     use HasFactory, SoftDeletes;
 
     /**
+     * Flag para controlar se o restore deve cascatear para os sellers.
+     * No fluxo de recadastro, os vendedores antigos devem permanecer inativos,
+     * pois o distribuidor informará novos vendedores no formulário.
+     */
+    public bool $restoreWithSellers = true;
+
+    /**
      * Boot do model: registra evento para soft delete em cascata dos sellers.
      * Como o Distributor usa SoftDeletes, o CASCADE do banco nunca é acionado
      * (o registro não é fisicamente removido), então precisamos tratar via Eloquent.
@@ -26,9 +33,12 @@ class Distributor extends Model
             $distributor->sellers()->delete();
         });
 
-        // Ao restaurar um distribuidor, restaura todos os seus vendedores
+        // Ao restaurar um distribuidor, restaura os vendedores apenas se a flag permitir.
+        // No recadastro ($restoreWithSellers = false), os vendedores antigos permanecem inativos.
         static::restoring(function (Distributor $distributor) {
-            $distributor->sellers()->withTrashed()->restore();
+            if ($distributor->restoreWithSellers) {
+                $distributor->sellers()->withTrashed()->restore();
+            }
         });
     }
 
