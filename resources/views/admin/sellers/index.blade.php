@@ -77,7 +77,8 @@
                             <td>{{ $seller->phone }}</td>
                             <td>{{ $seller->whatsapp ?? '-' }}</td>
                             <td>{{ $seller->position ?? '-' }}</td>
-                            <td>{{ $seller->distributor->trade_name }}</td>
+                            {{-- Usa nullsafe operator (?->) para evitar erro 500 caso o distribuidor tenha sido removido --}}
+                            <td>{{ $seller->distributor?->trade_name ?? 'Distribuidor não encontrado' }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('sellers.edit', $seller) }}"

@@ -12,6 +12,26 @@ class Distributor extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * Boot do model: registra evento para soft delete em cascata dos sellers.
+     * Como o Distributor usa SoftDeletes, o CASCADE do banco nunca é acionado
+     * (o registro não é fisicamente removido), então precisamos tratar via Eloquent.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Ao soft-deletar um distribuidor, soft-deleta todos os seus vendedores
+        static::deleting(function (Distributor $distributor) {
+            $distributor->sellers()->delete();
+        });
+
+        // Ao restaurar um distribuidor, restaura todos os seus vendedores
+        static::restoring(function (Distributor $distributor) {
+            $distributor->sellers()->withTrashed()->restore();
+        });
+    }
+
     protected $fillable = [
         'company_name',
         'trade_name',

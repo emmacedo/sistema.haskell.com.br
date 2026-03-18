@@ -58,7 +58,7 @@ class SellerController extends Controller
             Seller::create($request->validated());
 
             return redirect()
-                ->route('admin.sellers.index')
+                ->route('sellers.index')
                 ->with('success', 'Vendedor criado com sucesso!');
         } catch (\Exception $e) {
             return redirect()
@@ -97,7 +97,7 @@ class SellerController extends Controller
             $seller->update($request->validated());
 
             return redirect()
-                ->route('admin.sellers.index')
+                ->route('sellers.index')
                 ->with('success', 'Vendedor atualizado com sucesso!');
         } catch (\Exception $e) {
             return redirect()
@@ -116,7 +116,7 @@ class SellerController extends Controller
             $seller->delete();
 
             return redirect()
-                ->route('admin.sellers.index')
+                ->route('sellers.index')
                 ->with('success', 'Vendedor excluído com sucesso!');
         } catch (\Exception $e) {
             return redirect()
