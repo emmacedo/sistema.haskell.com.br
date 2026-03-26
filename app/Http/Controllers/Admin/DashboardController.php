@@ -99,8 +99,9 @@ class DashboardController extends Controller
             ->get();
 
         // Mensagens não lidas recentes (NÃO filtradas — listagem de ação)
+        // Eager load city.state para evitar N+1 queries na view (exibe cidade e UF)
         $recentUnreadMessages = ContactMessage::unread()
-            ->with(['distributor', 'city'])
+            ->with(['distributor', 'city.state'])
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
