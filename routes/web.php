@@ -50,9 +50,9 @@ Route::post('/contato', [App\Http\Controllers\Frontend\ContactController::class,
 // Cadastro de novos distribuidores (auto-cadastro)
 Route::get('/cadastro', [App\Http\Controllers\Frontend\DistributorRegistrationController::class, 'create'])
     ->name('registration.create');
-// Proteção contra spam: máximo 3 tentativas de cadastro por hora por IP
+// Proteção contra spam: máximo 10 tentativas de cadastro por hora por IP
 Route::post('/cadastro', [App\Http\Controllers\Frontend\DistributorRegistrationController::class, 'store'])
-    ->middleware('throttle:3,60')
+    ->middleware('throttle:10,60')
     ->name('registration.store');
 Route::get('/cadastro/sucesso', [App\Http\Controllers\Frontend\DistributorRegistrationController::class, 'success'])
     ->name('registration.success');
