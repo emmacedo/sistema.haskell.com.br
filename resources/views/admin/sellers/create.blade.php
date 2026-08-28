@@ -136,10 +136,10 @@
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+@include('partials.phone-mask')
 <script>
     $(document).ready(function() {
         // Máscaras
-        $('input[name="phone"]').mask('(00) 0000-0000');
         $('input[name="whatsapp"]').mask('(00) 00000-0000');
 
         // Select2
