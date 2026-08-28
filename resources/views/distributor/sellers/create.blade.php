@@ -113,10 +113,10 @@
 @endsection
 
 @section('scripts')
+@include('partials.phone-mask')
 <script>
     $(document).ready(function() {
         // Máscaras
-        $('#phone').mask('(00) 0000-0000');
         $('#whatsapp').mask('(00) 00000-0000');
     });
 </script>

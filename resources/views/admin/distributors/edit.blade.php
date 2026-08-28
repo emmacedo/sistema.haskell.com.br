@@ -477,6 +477,7 @@
 
 @section('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+@include('partials.phone-mask')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Função para confirmar exclusão de vendedor
@@ -499,8 +500,6 @@
     $(document).ready(function() {
         // Máscaras
         $('input[name="cnpj"]').mask('00.000.000/0000-00');
-        $('input[name="phone"]').mask('(00) 0000-0000');
-        $('input[name="phone2"]').mask('(00) 0000-0000');
         $('input[name="whatsapp"]').mask('(00) 00000-0000');
         $('input[name="cep"]').mask('00000-000');
         $('input[name="estado"]').mask('AA');
