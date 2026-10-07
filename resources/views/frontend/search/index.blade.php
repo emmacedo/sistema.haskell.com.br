@@ -8,8 +8,7 @@
         <div class="col-md-8">
             <!-- Formulário de busca unificado -->
             <div class="mt-3">
-                <form action="{{ route('search.search') }}" method="POST" id="searchForm">
-                    @csrf
+                <form action="{{ route('search.search') }}" method="GET" id="searchForm">
                     <input type="hidden" name="search_type" id="search_type" value="auto">
 
                     <div class="search-box">

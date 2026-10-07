@@ -35,8 +35,15 @@ Route::get('/busca', [App\Http\Controllers\Frontend\DistributorSearchController:
     ->name('search.busca');
 Route::get('/buscar', [App\Http\Controllers\Frontend\DistributorSearchController::class, 'index'])
     ->name('search.buscar');
-Route::post('/busca', [App\Http\Controllers\Frontend\DistributorSearchController::class, 'search'])
+// Resultados da busca via GET: consulta pública somente leitura, sem dependência de
+// sessão/CSRF. O site embute o sistema em dois iframes (desktop e mobile) que, na
+// primeira visita, abrem sessões distintas — o POST com token CSRF resultava em 419.
+Route::get('/busca/resultados', [App\Http\Controllers\Frontend\DistributorSearchController::class, 'search'])
     ->name('search.search');
+// Compatibilidade: formulários antigos (POST) ainda abertos no navegador no momento
+// da publicação. Isento de CSRF em VerifyCsrfToken::$except.
+Route::post('/busca', [App\Http\Controllers\Frontend\DistributorSearchController::class, 'search'])
+    ->name('search.search.legacy');
 Route::get('/busca/autocomplete', [App\Http\Controllers\Frontend\DistributorSearchController::class, 'autocomplete'])
     ->name('search.autocomplete');
 

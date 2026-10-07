@@ -9,8 +9,7 @@
 
             <!-- Campo de busca no topo -->
             <div class="mt-4">
-                <form action="{{ route('search.search') }}" method="POST" id="searchForm">
-                    @csrf
+                <form action="{{ route('search.search') }}" method="GET" id="searchForm">
                     <input type="hidden" name="search_type" id="search_type" value="auto">
 
                     <div class="search-box">
