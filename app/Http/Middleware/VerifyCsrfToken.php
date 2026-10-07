@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Busca pública de distribuidores (somente leitura). O formulário atual usa GET;
+        // o POST permanece apenas por compatibilidade com páginas já abertas.
+        'busca',
     ];
 }
